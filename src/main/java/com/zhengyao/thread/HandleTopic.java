@@ -67,7 +67,7 @@ public class HandleTopic extends Thread {
                             System.out.println("该线程访问的是"+topicid+"的子话题");
                             break;
                         }
-                        if(offset>=60){//爬取每个话题下60个子话题
+                        if(offset>=40){//爬取每个话题下40个子话题
                             break;
                         }
                        // System.out.println(Thread.currentThread() + ">>>");
