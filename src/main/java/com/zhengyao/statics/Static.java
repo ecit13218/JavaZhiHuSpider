@@ -15,6 +15,7 @@ public class Static {
     //1主话题
     public static BlockingQueue<String> topicID = new ArrayBlockingQueue<String>(50);
     public static AtomicInteger UserCount=new AtomicInteger(0);
+    public static int userCapacity=1000000;
     //子话题
     public static BlockingQueue<String> SecondtopicID = new ArrayBlockingQueue<String>(50000);
     public static ConcurrentHashMap<String,Integer> map=new ConcurrentHashMap<String, Integer>();
