@@ -17,7 +17,7 @@ public class TestMybatis extends AbstractTransactionalTestNGSpringContextTests {
     @Autowired
     private UserDao userDao;
     @Autowired
-    private ZhihuUserDao zhihuuserDao;
+    private ZhihuUserDao zhihuuserDao;//这里报错无关紧要，还是依然可以使用，可以将设置中spring的检查级别改为warning（Spring | Spring Core | Code | Autowiring for Bean Class）
 
     @org.testng.annotations.Test
     public void TestMybatis(){
