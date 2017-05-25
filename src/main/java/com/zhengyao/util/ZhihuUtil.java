@@ -24,9 +24,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,7 +62,8 @@ public class ZhihuUtil {
     public static void getAllSubTopic() throws InterruptedException, SQLException, IOException {
 
         //这里的线程不能设置太大 由于知乎的反爬机制，同一ip同一时间发过多请求只能响应部分请求
-        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
+       // ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
+        ThreadPoolExecutor threadPoolExecutor=new ThreadPoolExecutor(3,5,30,TimeUnit.MINUTES,new ArrayBlockingQueue<Runnable>(80));
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         cm.setMaxTotal(200);// 设置最大连接数
         cm.setDefaultMaxPerRoute(200);// 对每个指定连接的服务器（指定的ip）可以创建并发20 socket进行访问
@@ -80,16 +79,17 @@ public class ZhihuUtil {
             String url = "https://www.zhihu.com/node/TopicsPlazzaListV2";
             HttpPost httppost = new HttpPost(url);
             httppost.releaseConnection();
-            fixedThreadPool.execute(new HandleTopic(httpClient, httppost, Static.topicID.poll()));
+            threadPoolExecutor.execute(new HandleTopic(httpClient, httppost, Static.topicID.poll()));
         }
         // 爬取完后进入下一步
-        fixedThreadPool.shutdown();
-        threadShutDown(fixedThreadPool,httpClient);
+        threadPoolExecutor.shutdown();
+        threadShutDown(threadPoolExecutor,httpClient);
     }
 
     public static void getAllUserUrl() throws InterruptedException, SQLException, IOException {
         //这里的线程不能设置太大 由于知乎的反爬机制，同一ip同一时间发过多请求只能响应部分请求
-        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
+       // ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
+        ThreadPoolExecutor threadPoolExecutor=new ThreadPoolExecutor(3,5,30,TimeUnit.MINUTES,new ArrayBlockingQueue<Runnable>(10000));
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         cm.setMaxTotal(200);// 设置最大连接数
         cm.setDefaultMaxPerRoute(200);// 对每个指定连接的服务器（指定的ip）可以创建并发20 socket进行访问
@@ -110,7 +110,7 @@ public class ZhihuUtil {
                 HttpPost httppost = new HttpPost(
                         "https://www.zhihu.com/topic/" + Static.SecondtopicID.take() + "/followers");
                 //System.out.println(httppost.getURI());
-                fixedThreadPool.execute(new GetUserUrl(httpClient, httppost));
+                threadPoolExecutor.execute(new GetUserUrl(httpClient, httppost));
                 httppost.releaseConnection();
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
@@ -118,9 +118,9 @@ public class ZhihuUtil {
             }
         }
 
-        fixedThreadPool.shutdown();
+        threadPoolExecutor.shutdown();
         //TimeUnit.SECONDS.sleep(10);
-        threadShutDown(fixedThreadPool,httpClient);
+        threadShutDown(threadPoolExecutor,httpClient);
 //        System.out.println("*******************");
 //        System.out.println(Static.map);
 //        System.out.println(Static.map.size());
@@ -128,7 +128,8 @@ public class ZhihuUtil {
     public static void getAllUser() throws InterruptedException, SQLException, IOException
     {
 
-        ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
+        //ExecutorService fixedThreadPool = Executors.newFixedThreadPool(3);
+        ThreadPoolExecutor threadPoolExecutor=new ThreadPoolExecutor(3,5,30,TimeUnit.MINUTES,new ArrayBlockingQueue<Runnable>(Static.userCapacity));
         PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
         cm.setMaxTotal(200);// 设置最大连接数
         cm.setDefaultMaxPerRoute(200);// 对每个指定连接的服务器（指定的ip）可以创建并发20 socket进行访问
@@ -145,15 +146,15 @@ public class ZhihuUtil {
             String userurl = "https://www.zhihu.com/people/" +map.getKey();
             //System.out.println(userurl+">>>>>>>>>");
             HttpGet httpget = new HttpGet(userurl);
-            fixedThreadPool.execute(new GetUserInfo(httpClient, httpget));
+            threadPoolExecutor.execute(new GetUserInfo(httpClient, httpget));
             httpget.releaseConnection();
         }
-        fixedThreadPool.shutdown();
-        threadShutDown(fixedThreadPool,httpClient);
+        threadPoolExecutor.shutdown();
+        threadShutDown(threadPoolExecutor,httpClient);
     }
- private static void threadShutDown(ExecutorService fixedThreadPool,CloseableHttpClient httpClient)  {
+ private static void threadShutDown(ExecutorService threadPoolExecutor,CloseableHttpClient httpClient)  {
      while (true) {
-         if (fixedThreadPool.isTerminated()) {
+         if (threadPoolExecutor.isTerminated()) {
              try {
                  httpClient.close();
              } catch (IOException e) {
