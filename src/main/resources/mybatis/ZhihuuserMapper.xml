@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zhengyao.dao.ZhihuUserDao">
+
+    <insert id="insert" parameterType="User">
+    insert into zhihuuser (name, sex,userUrl,signature,profiles, location,
+      bussiness, employment, postion, 
+      education, education_extra, suppose, 
+      thanks, question, answer, 
+      article, followers, following, 
+      bewatched,publicEdit)
+    values (#{name,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{userUrl,jdbcType=VARCHAR},
+    #{signature,jdbcType=VARCHAR},#{profiles,jdbcType=VARCHAR},
+      #{location,jdbcType=VARCHAR},
+      #{bussiness,jdbcType=VARCHAR}, #{employment,jdbcType=VARCHAR}, #{postion,jdbcType=VARCHAR}, 
+      #{education,jdbcType=VARCHAR}, #{educationExtra,jdbcType=VARCHAR}, #{suppose,jdbcType=INTEGER},
+      #{thanks,jdbcType=INTEGER}, #{question,jdbcType=INTEGER}, #{answer,jdbcType=INTEGER}, 
+      #{article,jdbcType=INTEGER}, #{followers,jdbcType=INTEGER}, #{following,jdbcType=INTEGER}, 
+      #{bewatched,jdbcType=INTEGER},#{publicEdit,jdbcType=INTEGER})
+  </insert>
+
+</mapper>

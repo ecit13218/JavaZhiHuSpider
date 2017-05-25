@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../JavaZhiHuSpider-master/Javazhihu/Javazhihu.iml" filepath="$PROJECT_DIR$/../JavaZhiHuSpider-master/Javazhihu/Javazhihu.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Javazhihu.iml" filepath="$PROJECT_DIR$/Javazhihu.iml" />
     </modules>
   </component>
 </project>
