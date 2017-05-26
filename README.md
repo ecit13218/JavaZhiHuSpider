@@ -1,0 +1,4 @@
+# JavaZhiHuSpider
+java知乎爬虫
+基于Spring+Mybatis+Maven简单搭建的
+在使用时需要手动在CookieStatic中存储对应的账号cookie，使用多个账号，少开线程可以减少被屏蔽的几率。
